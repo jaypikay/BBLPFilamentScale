@@ -10,6 +10,6 @@ bool setupNFC();
 
 void handleNFC();
 
-uint32_t readMifareClassicTag();
+uint32_t readMifareTag();
 
 #endif /* _NFC */

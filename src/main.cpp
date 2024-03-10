@@ -2,10 +2,12 @@
 #include <SPI.h>
 
 #include "config.h"
-#include "nfc.h"
-#include "scale.h"
 #include "utils.h"
 #include "wifi.h"
+#include "nfc.h"
+#include "scale.h"
+#include "spoolman.h"
+#include "ui.h"
 
 void setup() {
   Serial.begin(115200);

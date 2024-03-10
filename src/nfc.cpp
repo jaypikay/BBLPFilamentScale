@@ -54,7 +54,7 @@ bool readMfuPage(uint8_t page, uint8_t *data)
     return false;
 }
 
-uint32_t readMifareClassicTag()
+uint32_t readMifareTag()
 {
     bool success;
     uint32_t spoolId;
@@ -103,4 +103,7 @@ error:
     return INVALID_TAG;
 }
 
-void handleNFC() { readMifareClassicTag(); }
+void handleNFC()
+{
+    uint32_t spoolId = readMifareTag();
+}
