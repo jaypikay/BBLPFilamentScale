@@ -2,6 +2,4 @@
 
 #include "ui.h"
 
-void setupUI() {
-  
-}
+void setupUI() {}

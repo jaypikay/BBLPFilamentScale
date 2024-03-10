@@ -2,13 +2,18 @@
 #include <SPI.h>
 
 #include "config.h"
-#include "wifi.h"
 #include "nfc.h"
 #include "scale.h"
+#include "utils.h"
+#include "wifi.h"
 
 void setup() {
   Serial.begin(115200);
   Serial.println("");
+
+#ifdef DEBUG
+  debug_println("*** DEBUG prints enabled ***");
+#endif /* DEBUG */
 
   setupWiFi();
 

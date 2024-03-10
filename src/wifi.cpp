@@ -7,7 +7,7 @@
 WiFiManager wm;
 
 void setupWiFi() {
-  wm.setConfigPortalTimeout(60);
+    wm.setConfigPortalTimeout(60);
   if (wm.autoConnect("Filament Scale AP")) {
     Serial.println("WiFi connection successful.");
     ArduinoOTA.begin();
