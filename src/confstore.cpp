@@ -16,3 +16,6 @@ bool setupFS()
         return false;
     }
 }
+
+void loadSettings() {
+}

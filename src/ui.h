@@ -3,4 +3,8 @@
 
 void setupUI();
 
+void requestSpoolUpdate(uint32_t spoolId);
+
+void handleUi();
+
 #endif

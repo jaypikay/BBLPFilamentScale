@@ -9,23 +9,28 @@
 #include "spoolman.h"
 #include "ui.h"
 
-void setup() {
-  Serial.begin(115200);
-  Serial.println("");
+void setup()
+{
+    Serial.begin(115200);
+    Serial.println("");
 
 #ifdef DEBUG
-  debug_println("*** DEBUG prints enabled ***");
+    debug_println("*** DEBUG prints enabled ***");
 #endif /* DEBUG */
 
-  setupWiFi();
+    setupWiFi();
 
-  setupScale();
-  setupNFC();
+    has_scale = setupScale();
+    has_nfc = setupNFC();
+    setupUI();
 
-  Serial.println("Setup completed. Entering main loop...");
+    Serial.println("Setup completed. Entering main loop...");
 }
 
-void loop() {
-  handleOTA();
-  handleNFC();
+void loop()
+{
+    handleOTA();
+    handleScale();
+    handleNFC();
+    handleUi();
 }

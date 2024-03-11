@@ -6,7 +6,11 @@
 #include "nfc.h"
 #include "utils.h"
 
+#include "ui.h"
+
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
+
+bool has_nfc;
 
 bool setupNFC()
 {
@@ -16,6 +20,8 @@ bool setupNFC()
     uint32_t versiondata = nfc.getFirmwareVersion();
     if (versiondata)
     {
+        has_nfc = true;
+
         Serial.print("Found chip PN5");
         Serial.println((versiondata >> 24) & 0xFF, HEX);
         Serial.print("Firmware version: ");
@@ -29,6 +35,8 @@ bool setupNFC()
     }
     else
     {
+        has_nfc = false;
+
         Serial.println("PN53x card not found!");
 
         return false;
@@ -106,4 +114,10 @@ error:
 void handleNFC()
 {
     uint32_t spoolId = readMifareTag();
+
+    if (spoolId != INVALID_TAG) {
+        requestSpoolUpdate(spoolId);
+    }
+
+    delay(100);
 }
