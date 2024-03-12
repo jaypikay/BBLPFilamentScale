@@ -4,30 +4,31 @@
 
 #include "config.h"
 #include "utils.h"
+#include "confstore.h"
 #include "wifi.h"
 
 WiFiManager wm;
 
 int timeout = 120;
 bool portalRunning = false;
-int customFieldLength = 40;
 
-WiFiManagerParameter custom_mqtt_server_addr;
-WiFiManagerParameter custom_mqtt_server_port;
+WiFiManagerParameter custom_mqtt_host;
+WiFiManagerParameter custom_mqtt_port;
 WiFiManagerParameter custom_mqtt_username;
 WiFiManagerParameter custom_mqtt_password;
 
 void setupWiFi()
 {
-    new (&custom_mqtt_server_addr) WiFiManagerParameter("mqtt_host", "MQTT Server Host", "", customFieldLength, "placeholder=\"MQTT Server Address\"");
-    new (&custom_mqtt_server_port) WiFiManagerParameter("mqtt_port", "MQTT Server Port", "1883", 5, "placeholder=\"MQTT Server Address\" type=\"number\"");
-    new (&custom_mqtt_username) WiFiManagerParameter("mqtt_username", "MQTT Username", "", customFieldLength, "placeholder=\"MQTT Server Address\"");
-    new (&custom_mqtt_password) WiFiManagerParameter("mqtt_password", "MQTT Password", "", customFieldLength, "placeholder=\"MQTT Server Address\" type=\"password\"");
+    new (&custom_mqtt_host) WiFiManagerParameter("mqtt_host", "MQTT Server Host", "", 40);
+    new (&custom_mqtt_port) WiFiManagerParameter("mqtt_port", "MQTT Server Port", "1883", 6, "type=\"number\"");
+    new (&custom_mqtt_username) WiFiManagerParameter("mqtt_username", "MQTT Username", "", 20);
+    new (&custom_mqtt_password) WiFiManagerParameter("mqtt_password", "MQTT Password", "", 32,  "type=\"password\"");
 
-    wm.addParameter(&custom_mqtt_server_addr);
-    wm.addParameter(&custom_mqtt_server_port);
+    wm.addParameter(&custom_mqtt_host);
+    wm.addParameter(&custom_mqtt_port);
     wm.addParameter(&custom_mqtt_username);
     wm.addParameter(&custom_mqtt_password);
+    wm.setSaveParamsCallback(saveConfigCallback);
 
     std::vector<const char *> menu = {"wifi", "info", "param", "sep", "restart", "exit"};
     wm.setMenu(menu);
@@ -74,24 +75,24 @@ void handleWiFi()
             }
             portalRunning = !portalRunning;
 
-            delay(10000); // reset delay hold
-            if( digitalRead(TRIGGER_ENABLE_WEB_PORTAL) == LOW ){
+            /*delay(10000); // reset delay hold
+            if (digitalRead(TRIGGER_ENABLE_WEB_PORTAL) == LOW)
+            {
                 Serial.println("Button Held");
                 Serial.println("Erasing Config, restarting");
                 wm.resetSettings();
                 ESP.restart();
-            }
-
+            }*/
         }
     }
 }
 
-String getConfigParam(String name)
+void saveConfigCallback()
 {
-    String value;
-    if (wm.server->hasArg(name))
-    {
-        value = wm.server->arg(name);
-    }
-    return value;
+    mqtt_host = String(custom_mqtt_host.getValue());
+    mqtt_port = (uint16_t)atoi(custom_mqtt_port.getValue());
+    mqtt_username = String(custom_mqtt_username.getValue());
+    mqtt_password = String(custom_mqtt_password.getValue());
+
+    saveConfig();
 }

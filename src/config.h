@@ -4,9 +4,7 @@
 #define TRIGGER_ENABLE_WEB_PORTAL D5
 
 /* EEPROM */
-#define EEPROM_SIZE 12
-#define CONFIG_SLOT_LOADCELL_OFFSET 0
-#define CONFIG_SLOT_LOADCELL_READ_SAMPLES 1
+#define EEPROM_SIZE 512
 
 /* HX711 Amplifier for Load Cell*/
 const uint8_t LOADCELL_DOUT_PIN = D6;

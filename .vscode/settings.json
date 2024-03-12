@@ -4,6 +4,7 @@
         "string": "cpp",
         "string_view": "cpp",
         "ranges": "cpp",
-        "system_error": "cpp"
+        "system_error": "cpp",
+        "bitset": "cpp"
     },
 }

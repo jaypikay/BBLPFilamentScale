@@ -4,8 +4,10 @@
 #include "config.h"
 #include "utils.h"
 #include "wifi.h"
+#include "confstore.h"
 #include "nfc.h"
 #include "scale.h"
+#include "mqtt.h"
 #include "spoolman.h"
 
 void setup()
@@ -19,7 +21,10 @@ void setup()
     debug_println("*** DEBUG prints enabled ***");
 #endif /* DEBUG */
 
+    setupConfigFS();
+
     setupWiFi();
+    setupMqtt();
 
     has_scale = setupScale();
     has_nfc = setupNFC();
@@ -35,4 +40,5 @@ void loop()
 
     handleScale();
     handleNFC();
+    handleMqtt();
 }

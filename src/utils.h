@@ -1,7 +1,7 @@
 #ifndef _HELPERS
 #define _HELPERS 1
 
-#ifdef DEBUG
+#ifdef ENABLE_DEBUG
 #define debug_print(A) Serial.print(A)
 #define debug_println(A) Serial.println(A)
 
