@@ -7,7 +7,6 @@
 #include "nfc.h"
 #include "scale.h"
 #include "spoolman.h"
-#include "ui.h"
 
 void setup()
 {
@@ -22,7 +21,6 @@ void setup()
 
     has_scale = setupScale();
     has_nfc = setupNFC();
-    setupUI();
 
     Serial.println("Setup completed. Entering main loop...");
 }
@@ -32,5 +30,4 @@ void loop()
     handleOTA();
     handleScale();
     handleNFC();
-    handleUi();
 }

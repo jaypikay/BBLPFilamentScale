@@ -1,14 +1,10 @@
-#include <ESPAsyncWebServer.h>
-#include <ESPAsyncWiFiManager.h>
+#include <WiFiManager.h>
 #include <WiFiUdp.h>
 #include <ArduinoOTA.h>
 
 #include "wifi.h"
 
-AsyncWebServer server(80);
-DNSServer dns;
-
-AsyncWiFiManager wm(&server, &dns);
+WiFiManager wm;
 
 void setupWiFi()
 {
