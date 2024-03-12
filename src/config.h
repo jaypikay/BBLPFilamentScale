@@ -1,6 +1,8 @@
 #ifndef _CONFIG
 #define _CONFIG 1
 
+#define TRIGGER_ENABLE_WEB_PORTAL D5
+
 /* EEPROM */
 #define EEPROM_SIZE 12
 #define CONFIG_SLOT_LOADCELL_OFFSET 0

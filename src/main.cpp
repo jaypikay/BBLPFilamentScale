@@ -13,6 +13,8 @@ void setup()
     Serial.begin(115200);
     Serial.println("");
 
+    pinMode(TRIGGER_ENABLE_WEB_PORTAL, INPUT_PULLUP);
+
 #ifdef DEBUG
     debug_println("*** DEBUG prints enabled ***");
 #endif /* DEBUG */
@@ -28,6 +30,9 @@ void setup()
 void loop()
 {
     handleOTA();
+
+    handleWiFi();
+
     handleScale();
     handleNFC();
 }
