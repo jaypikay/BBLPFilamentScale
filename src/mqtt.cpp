@@ -36,7 +36,6 @@ void handleMqtt()
 
         mqttClient.beginMessage("device/spoolman/hello");
         mqttClient.print("Hello World!");
-        mqttClient.print("Hello");
         mqttClient.endMessage();
     }
 }

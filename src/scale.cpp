@@ -46,7 +46,6 @@ void handleScale()
         long reading = loadcell.read_average(read_samples);
         current_weight = (reading - loadcell.get_offset()) / loadcell.get_scale();
 
-#if DEBUG == true
         debug_print("*HX711 reading: ");
         debug_print(reading);
         debug_print(" ::: [ CAL_OFFSET: ");
@@ -56,7 +55,7 @@ void handleScale()
         debug_print(", Adjusted Value: ");
         debug_print(current_weight);
         debug_println(" ]");
-#endif
+
         delay(100);
     }
 }

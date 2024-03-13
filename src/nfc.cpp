@@ -5,6 +5,7 @@
 #include "config.h"
 #include "nfc.h"
 #include "utils.h"
+#include "spoolman.h"
 
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
@@ -114,6 +115,7 @@ void handleNFC()
     uint32_t spoolId = readMifareTag();
 
     if (spoolId != INVALID_TAG) {
+        requestSpool(spoolId);
         //requestSpoolUpdate(spoolId);
     }
 

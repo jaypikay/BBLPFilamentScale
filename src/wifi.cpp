@@ -112,24 +112,43 @@ void handleWiFi()
 
 void saveConfigCallback()
 {
-    if (strcasecmp(custom_mqtt_host.getValue(), mqtt_host.c_str()) != 0)
+    if (!String(custom_mqtt_host.getValue()).isEmpty() && strcasecmp(custom_mqtt_host.getValue(), mqtt_host.c_str()) != 0)
     {
+        debug_println("*CONF: mqtt_host has changed...");
         mqtt_host = String(custom_mqtt_host.getValue());
     }
-    if (strcasecmp(custom_mqtt_port.getValue(), mqtt_host.c_str()) != 0)
+    if (strcasecmp(custom_mqtt_port.getValue(), String(mqtt_port).c_str()) != 0)
     {
+        debug_println("*CONF: mqtt_port has changed...");
         mqtt_port = (uint16_t)atoi(custom_mqtt_port.getValue());
     }
-    if (strcasecmp(custom_mqtt_username.getValue(), mqtt_username.c_str()) != 0)
+    if (!String(custom_mqtt_username.getValue()).isEmpty() && strcasecmp(custom_mqtt_username.getValue(), mqtt_username.c_str()) != 0)
     {
+        debug_println("*CONF: mqtt_username has changed...");
         mqtt_username = String(custom_mqtt_username.getValue());
     }
-    if (strcasecmp(custom_mqtt_password.getValue(), mqtt_password.c_str()) != 0)
+    if (!String(custom_mqtt_password.getValue()).isEmpty() && strcasecmp(custom_mqtt_password.getValue(), mqtt_password.c_str()) != 0)
     {
+        debug_println("*CONF: mqtt_password has changed...");
         mqtt_password = String(custom_mqtt_password.getValue());
     }
 
     parseURL(String(custom_spoolman_url.getValue()), &url);
+
+    if (!url.host.isEmpty() && url.host.compareTo(spoolman_host) != 0)
+    {
+        debug_println("*CONF: custom_spoolman_url has changed...");
+        
+        spoolman_host = url.host;
+        spoolman_protocol = url.protocol;
+        spoolman_port = (uint16_t)url.port.toInt();
+    }
+
+    if (!String(custom_spoolman_api_endpoint.getValue()).isEmpty() && strcasecmp(custom_spoolman_api_endpoint.getValue(), spoolman_api_endpoint.c_str()) != 0)
+    {
+        debug_println("*CONF: custom_spoolman_api_endpoint has changed...");
+        spoolman_api_endpoint = String(custom_spoolman_api_endpoint.getValue());
+    }
 
     saveConfig();
 }
@@ -203,15 +222,7 @@ void parseURL(String urlString, struct URL *url)
         url->port = "80";
     }
 
-    if (url->port.isEmpty())
-    {
-        if (url->protocol == "http")
-        {
-            url->port = "80";
-        }
-        else
-        {
-            url->port = "443";
-        }
+    if (url->port.isEmpty()) {
+        url->port = "443";
     }
 }

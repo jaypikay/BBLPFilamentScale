@@ -11,9 +11,9 @@ uint16_t mqtt_port;
 String mqtt_username;
 String mqtt_password;
 
-String spoolman_protocol;
 String spoolman_host;
 uint16_t spoolman_port;
+String spoolman_protocol;
 String spoolman_api_endpoint;
 
 void setupConfigFS()
@@ -43,6 +43,12 @@ bool loadConfig()
         return false;
     }
 
+    configFile.close();
+
+#ifdef ENABLE_DEBUG
+    dumpConfigFile();
+#endif
+
     /* MQTT Settings */
     mqtt_host = String(doc["mqtt_host"]);
     mqtt_port = doc["mqtt_port"];
@@ -58,19 +64,40 @@ bool loadConfig()
     return true;
 }
 
+#ifdef ENABLE_DEBUG
+void dumpConfigFile()
+{
+    debug_println("*CONF: Dumping config file content...");
+    File configFile = LittleFS.open("/config.json", "r");
+    if (configFile)
+    {
+        uint8_t buf[512] = {0};
+        configFile.read(buf, 512);
+        debug_println(String((char *)buf));
+        configFile.close();
+    }
+    else
+    {
+        Serial.println("Failed to open config file");
+    }
+}
+#endif
+
 bool saveConfig()
 {
     StaticJsonDocument<200> doc;
 
-    if (!mqtt_host.isEmpty())
-        doc["mqtt_host"] = mqtt_host.c_str();
+    doc["mqtt_host"] = mqtt_host.c_str();
     doc["mqtt_port"] = mqtt_port;
     doc["mqtt_username"] = mqtt_username.c_str();
     doc["mqtt_password"] = mqtt_password.c_str();
 
     doc["spoolman_host"] = spoolman_host.c_str();
+    debug_println(spoolman_port);
+    debug_println(String(doc["spoolman_port"]));
     doc["spoolman_port"] = spoolman_port;
-    doc["spoolman_protocol"] = spoolman_protocol.toInt();
+    debug_println(String(doc["spoolman_port"]));
+    doc["spoolman_protocol"] = spoolman_protocol.c_str();
     doc["spoolman_api_endpoint"] = spoolman_api_endpoint.c_str();
 
     File configFile = LittleFS.open("/config.json", "w");
@@ -81,5 +108,12 @@ bool saveConfig()
     }
 
     serializeJson(doc, configFile);
+
+    configFile.close();
+
+#ifdef ENABLE_DEBUG
+    dumpConfigFile();
+#endif
+
     return true;
 }
