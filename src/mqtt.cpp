@@ -32,7 +32,6 @@ void handleMqtt()
 
     if (digitalRead(D5) == LOW)
     {
-
         debug_println("Sending MQTT message...");
 
         mqttClient.beginMessage("device/spoolman/hello");
