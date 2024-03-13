@@ -42,11 +42,7 @@ bool loadConfig()
     mqtt_port = doc["mqtt_port"];
     mqtt_username = String(doc["mqtt_username"]);
     mqtt_password = String(doc["mqtt_password"]);
-
-    Serial.print("Loaded mqtt_username: ");
-    Serial.println(mqtt_username);
-    Serial.print("Loaded mqtt_password: ");
-    Serial.println(mqtt_password);
+    
     return true;
 }
 
