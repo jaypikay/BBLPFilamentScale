@@ -5,6 +5,7 @@
 #include "config.h"
 #include "utils.h"
 #include "confstore.h"
+#include "spoolman.h"
 #include "wifi.h"
 
 WiFiManager wm;
@@ -12,23 +13,10 @@ WiFiManager wm;
 int timeout = 120;
 bool portalRunning = ENABLE_WEB_PORTAL;
 
-struct URL
-{
-    String protocol = "";
-    String host = "";
-    String port = "";
-    String path = "";
-} url;
-
-void parseURL(String urlString, struct URL *url);
-
 WiFiManagerParameter custom_mqtt_host;
 WiFiManagerParameter custom_mqtt_port;
 WiFiManagerParameter custom_mqtt_username;
 WiFiManagerParameter custom_mqtt_password;
-
-WiFiManagerParameter custom_spoolman_url;
-WiFiManagerParameter custom_spoolman_api_endpoint;
 
 void setupWiFi()
 {
@@ -40,11 +28,6 @@ void setupWiFi()
     wm.addParameter(&custom_mqtt_port);
     wm.addParameter(&custom_mqtt_username);
     wm.addParameter(&custom_mqtt_password);
-
-    new (&custom_spoolman_url) WiFiManagerParameter("spoolman_host", "SpoolMan URL", "", 80);
-    new (&custom_spoolman_api_endpoint) WiFiManagerParameter("spoolman_api_endpoint", "API endpoint", SPOOLMAN_API_ENDPOINT, 20);
-    wm.addParameter(&custom_spoolman_url);
-    wm.addParameter(&custom_spoolman_api_endpoint);
 
     wm.setSaveParamsCallback(saveConfigCallback);
 
@@ -97,6 +80,7 @@ void handleWiFi()
                 wm.stopWebPortal();
             }
             portalRunning = !portalRunning;
+            spoolmanStatus.webPortal = portalRunning;
 
             /*delay(10000); // reset delay hold
             if (digitalRead(TRIGGER_ENABLE_WEB_PORTAL) == LOW)
@@ -133,96 +117,5 @@ void saveConfigCallback()
         mqtt_password = String(custom_mqtt_password.getValue());
     }
 
-    parseURL(String(custom_spoolman_url.getValue()), &url);
-
-    if (!url.host.isEmpty() && url.host.compareTo(spoolman_host) != 0)
-    {
-        debug_println("*CONF: custom_spoolman_url has changed...");
-        
-        spoolman_host = url.host;
-        spoolman_protocol = url.protocol;
-        spoolman_port = (uint16_t)url.port.toInt();
-    }
-
-    if (!String(custom_spoolman_api_endpoint.getValue()).isEmpty() && strcasecmp(custom_spoolman_api_endpoint.getValue(), spoolman_api_endpoint.c_str()) != 0)
-    {
-        debug_println("*CONF: custom_spoolman_api_endpoint has changed...");
-        spoolman_api_endpoint = String(custom_spoolman_api_endpoint.getValue());
-    }
-
     saveConfig();
-}
-
-void parseURL(String urlString, struct URL *url)
-{
-    /* Source:
-    https://gist.github.com/adoble/f1877b403e1c31584d96beab4553e4a7
-    */
-    // Assume a valid URL
-
-    enum URLParseState
-    {
-        PROTOCOL,
-        SEPERATOR,
-        HOST,
-        PORT,
-        PATH
-    } state = PROTOCOL;
-
-    url->protocol = "";
-    url->host = "";
-    url->port = "";
-    url->path = "/";
-
-    for (unsigned int i = 0; i < urlString.length(); i++)
-    {
-        switch (state)
-        {
-        case PROTOCOL:
-            if (urlString[i] == ':')
-                state = SEPERATOR;
-            else
-                url->protocol += urlString[i];
-            break;
-        case SEPERATOR:
-            if (urlString[i] != '/')
-            {
-                state = HOST;
-                url->host += urlString[i];
-            }
-            break;
-        case HOST:
-            if (urlString[i] == ':')
-                state = PORT;
-            else
-            {
-                if (urlString[i] == '/')
-                    state = PATH;
-                else
-                    url->host += urlString[i];
-            }
-            break;
-        case PORT:
-            if (urlString[i] == '/')
-                state = PATH;
-            else
-                url->port += urlString[i];
-            break;
-        case PATH:
-            url->path += urlString[i];
-        }
-    }
-    url->protocol.toLowerCase();
-    url->host.toLowerCase();
-    url->port.toLowerCase();
-
-    if (url->protocol.isEmpty())
-    {
-        url->protocol = "http";
-        url->port = "80";
-    }
-
-    if (url->port.isEmpty()) {
-        url->port = "443";
-    }
 }

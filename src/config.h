@@ -1,14 +1,8 @@
-#ifndef _CONFIG
-#define _CONFIG 1
+#ifndef CONFIG_H
+#define CONFIG_H 1
 
 #define TRIGGER_ENABLE_WEB_PORTAL D5
-#define ENABLE_WEB_PORTAL true
-
-/* EEPROM */
-#define EEPROM_SIZE 512
-
-/* Spoolman API */
-#define SPOOLMAN_API_ENDPOINT "/api/v1/"
+#define ENABLE_WEB_PORTAL false
 
 /* HX711 Amplifier for Load Cell*/
 const uint8_t LOADCELL_DOUT_PIN = D6;
@@ -30,4 +24,7 @@ const uint8_t PN532_RESET = D3;
 
 const uint16_t PN532_READ_TIMEOUT = 50U;
 
-#endif /* _CONFIG */
+/* EEPROM */
+#define EEPROM_SIZE 512
+
+#endif /* CONFIG_H */

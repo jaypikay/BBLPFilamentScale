@@ -17,7 +17,7 @@ void setup()
 
     pinMode(TRIGGER_ENABLE_WEB_PORTAL, INPUT_PULLUP);
 
-#ifdef DEBUG
+#ifdef ENABLE_DEBUG
     debug_println("*** DEBUG prints enabled ***");
 #endif /* DEBUG */
 
@@ -35,9 +35,7 @@ void setup()
 void loop()
 {
     handleOTA();
-
     handleWiFi();
-
     handleScale();
     handleNFC();
     handleMqtt();

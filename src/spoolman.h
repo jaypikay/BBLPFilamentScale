@@ -1,6 +1,11 @@
-#ifndef _SPOOLMAN
-#define _SPOOLMAN 1
+#ifndef SPOOLMAN_H
+#define SPOOLMAN_H
 
-void requestSpool(int spoolId);
+typedef struct {
+    char deviceId[16];
+    bool webPortal;
+} SpoolmanStatus_t;
 
-#endif /* _SPOOLMAN */
+extern SpoolmanStatus_t spoolmanStatus;
+
+#endif

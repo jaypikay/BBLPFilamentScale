@@ -10,6 +10,7 @@
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 bool has_nfc;
+uint16_t current_spool;
 
 bool setupNFC()
 {
@@ -63,7 +64,6 @@ bool readMfuPage(uint8_t page, uint8_t *data)
 
 uint32_t readMifareTag()
 {
-    bool success;
     uint32_t spoolId;
     uint8_t uid[] = {0, 0, 0, 0, 0, 0, 0};
     uint8_t uidLength;
@@ -98,6 +98,7 @@ uint32_t readMifareTag()
                 if (strncmp((char *)data, "SPOO", 4) == 0)
                 {
                     debug_println("SpoolManager tag found.");
+                    current_spool = spoolId;
                     return spoolId;
                 }
             default:
@@ -115,9 +116,7 @@ void handleNFC()
     uint32_t spoolId = readMifareTag();
 
     if (spoolId != INVALID_TAG) {
-        requestSpool(spoolId);
+        //delay(500);
         //requestSpoolUpdate(spoolId);
     }
-
-    delay(100);
 }

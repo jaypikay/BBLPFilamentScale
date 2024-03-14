@@ -1,8 +1,8 @@
-#ifndef _MQTT
-#define _MQTT 1
+#ifndef MQTT_H
+#define MQTT_H 1
 
 void setupMqtt();
 
 void handleMqtt();
 
-#endif
+#endif /* MQTT_H */
