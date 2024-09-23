@@ -56,7 +56,7 @@ void handleMqtt()
 {
     if (millis() - lastTimeStatusSent > 2 * 1000)
     {
-        debug_println("Sending MQTT message...");
+        debug_println("MQTT: Sending message '" + topicPrefix + topic_status + "'...");
         mqttClient.beginMessage(topicPrefix + topic_status);
         mqttClient.print("ONLINE");
         mqttClient.endMessage();
