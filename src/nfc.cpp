@@ -98,7 +98,9 @@ uint32_t readMifareTag()
                 if (strncmp((char *)data, "SPOO", 4) == 0)
                 {
                     debug_println("SpoolManager tag found.");
-                    current_spool = spoolId;
+                    if (spoolId != 0) {
+                        current_spool = spoolId;
+                    }
                     return spoolId;
                 }
             default:
