@@ -5,6 +5,14 @@
         "string_view": "cpp",
         "ranges": "cpp",
         "system_error": "cpp",
-        "bitset": "cpp"
+        "bitset": "cpp",
+        "*.tcc": "cpp",
+        "memory": "cpp",
+        "future": "cpp",
+        "istream": "cpp",
+        "functional": "cpp",
+        "tuple": "cpp",
+        "utility": "cpp",
+        "variant": "cpp"
     },
 }
