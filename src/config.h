@@ -7,8 +7,8 @@
 #define HOSTNAME "bbplss"
 
 /* HX711 Amplifier for Load Cell*/
-const uint8_t LOADCELL_DOUT_PIN = D6;
-const uint8_t LOADCELL_SCK_PIN = D7;
+const uint8_t LOADCELL_DOUT_PIN = D7;
+const uint8_t LOADCELL_SCK_PIN = D8;
 
 /*
  * Set LOADCELL_CALIBRATION_REFERENCE to a known weight (e.g. empty spool)
