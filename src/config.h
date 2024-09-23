@@ -4,6 +4,8 @@
 #define TRIGGER_ENABLE_WEB_PORTAL D5
 #define ENABLE_WEB_PORTAL false
 
+#define HOSTNAME "bbplss"
+
 /* HX711 Amplifier for Load Cell*/
 const uint8_t LOADCELL_DOUT_PIN = D6;
 const uint8_t LOADCELL_SCK_PIN = D7;

@@ -20,6 +20,8 @@ WiFiManagerParameter custom_mqtt_password;
 
 void setupWiFi()
 {
+    wm.setHostname(HOSTNAME);
+
     new (&custom_mqtt_host) WiFiManagerParameter("mqtt_host", "MQTT Server Host", "", 40);
     new (&custom_mqtt_port) WiFiManagerParameter("mqtt_port", "MQTT Server Port", "1883", 6, "type=\"number\"");
     new (&custom_mqtt_username) WiFiManagerParameter("mqtt_username", "MQTT Username", "", 20);
