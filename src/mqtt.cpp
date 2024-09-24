@@ -19,11 +19,26 @@ String topicPrefix = "spoolman/";
 String topic_status = "status";
 String topicSpoolState = "spool/state";
 
+uint32_t reconnectCounter = 0;
+
 long lastTimeStatusSent = 0;
 long lastTimeStateSent = 0;
 
 uint32_t readMifareTag();
 void sendStatusUpdate();
+
+int attemptConnectMqtt() {
+  if (mqttClient.connected()) {
+    return 1;
+  }
+
+  int status = mqttClient.connect(mqtt_host.c_str(), mqtt_port);
+  if (!status) {
+    Serial.print("MQTT connection failed! Error code = ");
+    Serial.println(mqttClient.connectError());
+  }
+  return status;
+}
 
 void setupMqtt() {
   debug_println("*MQTT: Initializing...");
@@ -40,10 +55,7 @@ void setupMqtt() {
       mqttClient.setUsernamePassword(mqtt_username, mqtt_password);
     }
 
-    if (!mqttClient.connect(mqtt_host.c_str(), mqtt_port)) {
-      Serial.print("MQTT connection failed! Error code = ");
-      Serial.println(mqttClient.connectError());
-    }
+    attemptConnectMqtt();
   }
 }
 
@@ -59,6 +71,12 @@ void handleMqtt() {
   if (millis() - lastTimeStateSent > 10 * 1000) {
     sendStatusUpdate();
     lastTimeStateSent = millis();
+  }
+
+  reconnectCounter++;
+  if (!(reconnectCounter % 60)) {
+    Serial.println("\033[1;32m*MQTT\033[0m: Attempting reconnect...");
+    attemptConnectMqtt();
   }
 }
 
