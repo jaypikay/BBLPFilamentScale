@@ -46,7 +46,7 @@ void setupWiFi() {
     Serial.println("WiFi connection successful.");
     ArduinoOTA.begin();
     if (ENABLE_WEB_PORTAL) {
-      debug_println("*WiFi: Starting web portal...");
+      debug_println("\033[1;36m*WiFi\033[0m: Starting web portal...");
       wm.startWebPortal();
     }
   } else {
@@ -61,14 +61,18 @@ void handleWiFi() {
     wm.process();
   }
 
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("\033[1;36m*WiFi\033[0m: Connection lost!");
+  }
+
   if (digitalRead(TRIGGER_ENABLE_WEB_PORTAL) == LOW) {
     delay(50);
     if (digitalRead(TRIGGER_ENABLE_WEB_PORTAL) == LOW) {
       if (!portalRunning) {
-        debug_println("*WiFi: Starting web portal...");
+        debug_println("\033[1;36m*WiFi\033[0m: Starting web portal...");
         wm.startWebPortal();
       } else {
-        debug_println("*WiFi: Stopping web portal...");
+        debug_println("\033[1;36m*WiFi\033[0m: Stopping web portal...");
         wm.stopWebPortal();
       }
       portalRunning = !portalRunning;

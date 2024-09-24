@@ -13,7 +13,7 @@ bool has_nfc;
 uint16_t current_spool;
 
 bool setupNFC() {
-  Serial.println("*PN532: Initializing...");
+  Serial.println("\033[1;33m*PN532\033[0m: Initializing...");
   nfc.begin();
 
   uint32_t versiondata = nfc.getFirmwareVersion();
@@ -40,7 +40,7 @@ bool setupNFC() {
 }
 
 bool readMfuPage(uint8_t page, uint8_t *data) {
-  Serial.println("*PN532: Reading page content...");
+  Serial.println("\033[1;33m*PN532\033[0m: Reading page content...");
   bool success = nfc.ntag2xx_ReadPage(page, data);
   if (success) {
 #ifdef DEBUG
@@ -48,7 +48,8 @@ bool readMfuPage(uint8_t page, uint8_t *data) {
 #endif /* DEBUG */
     return true;
   } else {
-    Serial.println("*PN532: Error reading Mifare Ultralight TAG.");
+    Serial.println(
+        "\033[1;33m*PN532\033[0m: Error reading Mifare Ultralight TAG.");
   }
 
   return false;
@@ -62,15 +63,16 @@ uint32_t readMifareTag() {
 
   if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength,
                               PN532_READ_TIMEOUT)) {
-    debug_println("*PN532: Found an ISO14443A card");
+    debug_println("\033[1;33m*PN532\033[0m: Found an ISO14443A card");
 
     if (uidLength >= 4 && uidLength <= 7) {
       switch (uidLength) {
       case 4:
-        Serial.println("*PN532: Mifare Classic tag present.");
+        Serial.println("\033[1;33m*PN532\033[0m: Mifare Classic tag present.");
         break;
       case 7:
-        Serial.println("*PN532: Mifare Ultralight tag present.");
+        Serial.println(
+            "\033[1;33m*PN532\033[0m: Mifare Ultralight tag present.");
 
         if (!readMfuPage(MFU_PAGE_SPOOL_ID, data))
           goto error;

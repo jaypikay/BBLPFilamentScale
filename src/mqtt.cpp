@@ -41,7 +41,7 @@ int attemptConnectMqtt() {
 }
 
 void setupMqtt() {
-  debug_println("*MQTT: Initializing...");
+  debug_println("\033[1;32m*MQTT\033[0m: Initializing...");
   if (!mqtt_host.isEmpty()) {
     byte mac[6];
     WiFi.macAddress(mac);
@@ -61,8 +61,8 @@ void setupMqtt() {
 
 void handleMqtt() {
   if (millis() - lastTimeStatusSent > 2 * 1000) {
-    debug_println("MQTT: Sending message '" + topicPrefix + topic_status +
-                  "'...");
+    debug_println("\033[1;32m*MQTT\033[0m: Sending message '" + topicPrefix +
+                  topic_status + "'...");
     mqttClient.beginMessage(topicPrefix + topic_status);
     mqttClient.print("ONLINE");
     mqttClient.endMessage();
