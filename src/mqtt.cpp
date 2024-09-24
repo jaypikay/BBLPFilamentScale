@@ -74,7 +74,7 @@ void handleMqtt() {
   }
 
   reconnectCounter++;
-  if (!(reconnectCounter % 60)) {
+  if ((reconnectCounter % 300) == 0) {
     Serial.println("\033[1;32m*MQTT\033[0m: Attempting reconnect...");
     attemptConnectMqtt();
   }
