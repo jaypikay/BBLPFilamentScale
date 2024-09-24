@@ -25,7 +25,7 @@ long lastTimeStateSent = 0;
 uint32_t readMifareTag();
 void sendStatusUpdate();
 
-intvoid setupMqtt() {
+void setupMqtt() {
   debug_println("*MQTT: Initializing...");
   if (!mqtt_host.isEmpty()) {
     byte mac[6];
