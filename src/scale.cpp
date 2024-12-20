@@ -7,11 +7,12 @@
 
 HX711 loadcell;
 
-bool has_scale;
-byte read_samples = LOADCELL_READ_SAMPLES;
+bool hasScale;
+byte readSamples = LOADCELL_READ_SAMPLES;
 
-long current_weight = 0;
-long scale_offset = LOADCELL_CALIBRATION_OFFSET;
+long previousWeight = -1;
+long currentWeight = 0;
+long scaleOffset = LOADCELL_CALIBRATION_OFFSET;
 
 void calibrateScale();
 
@@ -33,12 +34,12 @@ bool setupScale() {
   }
 }
 
-void handleScale() {
+bool handleScale() {
   if (loadcell.wait_ready_timeout(500)) {
-    loadcell.set_offset(scale_offset);
+    loadcell.set_offset(scaleOffset);
 
-    long reading = loadcell.read_average(read_samples);
-    current_weight = (reading - loadcell.get_offset()) / loadcell.get_scale();
+    long reading = loadcell.read_average(readSamples);
+    currentWeight = (reading - loadcell.get_offset()) / loadcell.get_scale();
 
     debug_print("\033[1;34m*HX711\033[0m: reading=");
     debug_print(reading);
@@ -47,11 +48,16 @@ void handleScale() {
     debug_print(", CAL_RATIO: ");
     debug_print(loadcell.get_scale());
     debug_print(", Adjusted Value: ");
-    debug_print(current_weight);
+    debug_print(currentWeight);
     debug_println(" ]");
 
-    delay(100);
+    if (previousWeight != currentWeight) {
+      previousWeight = currentWeight;
+      return true;
+    }
   }
+
+  return false;
 }
 
 void calibrateScale() {
@@ -81,6 +87,6 @@ void calibrateScale() {
   loadcell.set_scale(weight / LOADCELL_CALIBRATION_REFERENCE);
 #else
   loadcell.set_scale(LOADCELL_CALIBRATION_RATIO);
-  loadcell.set_offset(scale_offset);
+  loadcell.set_offset(scaleOffset);
 #endif
 }
