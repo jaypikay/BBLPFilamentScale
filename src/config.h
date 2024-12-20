@@ -6,6 +6,11 @@
 
 #define HOSTNAME "bbplss"
 
+// Interval setup
+#define MQTT_PUBLISH_INTERVAL 60000       // 60 seconds
+#define MQTT_RECONNECT_INTERVAL 5 * 60000 // 5 minutes
+#define TASKS_UPDATE_INTERVAL 1000        // 100 millis
+
 /* HX711 Amplifier for Load Cell*/
 const uint8_t LOADCELL_DOUT_PIN = D7;
 const uint8_t LOADCELL_SCK_PIN = D8;

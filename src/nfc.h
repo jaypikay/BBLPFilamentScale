@@ -3,14 +3,14 @@
 
 #define INVALID_TAG 0xFFFFFFFF
 
-extern bool has_nfc;
-extern uint16_t current_spool;
+extern bool hasNFC;
+extern uint16_t currentSpool;
 
 const uint8_t MFU_PAGE_SPOOL_ID = 5;
 const uint8_t MFU_PAGE_SPOOL_MAN_TAG = 6;
 
 bool setupNFC();
 
-void handleNFC();
+bool handleNFC();
 
 #endif /* _NFC */

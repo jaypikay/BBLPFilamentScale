@@ -9,8 +9,10 @@
 
 Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
-bool has_nfc;
-uint16_t current_spool;
+bool hasNFC;
+
+uint16_t previousSpool = 0;
+uint16_t currentSpool;
 
 bool setupNFC() {
   Serial.println("\033[1;33m*PN532\033[0m: Initializing...");
@@ -18,7 +20,7 @@ bool setupNFC() {
 
   uint32_t versiondata = nfc.getFirmwareVersion();
   if (versiondata) {
-    has_nfc = true;
+    hasNFC = true;
 
     Serial.print("Found chip PN5");
     Serial.println((versiondata >> 24) & 0xFF, HEX);
@@ -31,7 +33,7 @@ bool setupNFC() {
     // nfc.SAMConfig();
     return true;
   } else {
-    has_nfc = false;
+    hasNFC = false;
 
     Serial.println("PN53x card not found!");
 
@@ -87,9 +89,6 @@ uint32_t readMifareTag() {
           goto error;
         if (strncmp((char *)data, "SPOO", 4) == 0) {
           debug_println("SpoolManager tag found.");
-          if (spoolId != 0) {
-            current_spool = spoolId;
-          }
           return spoolId;
         }
       default:
@@ -102,11 +101,23 @@ error:
   return INVALID_TAG;
 }
 
-void handleNFC() {
+bool handleNFC() {
   uint32_t spoolId = readMifareTag();
+  if (spoolId != 0) {
+    currentSpool = spoolId;
+  }
+
+  if (previousSpool != currentSpool) {
+    debug_println(
+        "\033[1;33m*PN532\033[0m: new tag detected, requesting mqtt update.");
+    previousSpool = currentSpool;
+    return true;
+  }
 
   if (spoolId != INVALID_TAG) {
     // delay(500);
     // requestSpoolUpdate(spoolId);
   }
+
+  return false;
 }

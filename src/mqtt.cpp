@@ -1,3 +1,4 @@
+#include <Arduino.h>
 #include <ArduinoJson.h>
 #include <ArduinoMqttClient.h>
 #include <ESP8266WiFi.h>
@@ -19,7 +20,7 @@ String topicPrefix = "spoolman/";
 String topic_status = "status";
 String topicSpoolState = "spool/state";
 
-uint32_t reconnectCounter = 0;
+unsigned long previousReconnectMillis = 0;
 
 long lastTimeStatusSent = 0;
 long lastTimeStateSent = 0;
@@ -60,23 +61,20 @@ void setupMqtt() {
 }
 
 void handleMqtt() {
-  if (millis() - lastTimeStatusSent > 2 * 1000) {
-    debug_println("\033[1;32m*MQTT\033[0m: Sending message '" + topicPrefix +
-                  topic_status + "'...");
-    mqttClient.beginMessage(topicPrefix + topic_status);
-    mqttClient.print("ONLINE");
-    mqttClient.endMessage();
-    lastTimeStatusSent = millis();
-  }
-  if (millis() - lastTimeStateSent > 10 * 1000) {
-    sendStatusUpdate();
-    lastTimeStateSent = millis();
-  }
+  unsigned long currentMillis = millis();
 
-  reconnectCounter++;
-  if ((reconnectCounter % 300) == 0) {
+  debug_println("\033[1;32m*MQTT\033[0m: Sending message '" + topicPrefix +
+                topic_status + "'...");
+  mqttClient.beginMessage(topicPrefix + topic_status);
+  mqttClient.print("ONLINE");
+  mqttClient.endMessage();
+
+  sendStatusUpdate();
+
+  if (currentMillis - previousReconnectMillis >= MQTT_RECONNECT_INTERVAL) {
     Serial.println("\033[1;32m*MQTT\033[0m: Attempting reconnect...");
     attemptConnectMqtt();
+    previousReconnectMillis = currentMillis;
   }
 }
 
@@ -84,8 +82,8 @@ void sendStatusUpdate() {
   if (mqttClient.connected()) {
     JsonDocument doc;
 
-    doc["id"] = current_spool;
-    doc["weight"] = current_weight;
+    doc["id"] = currentSpool;
+    doc["weight"] = currentWeight;
 
     mqttClient.beginMessage(topicPrefix + topicSpoolState);
     serializeJson(doc, mqttClient);
